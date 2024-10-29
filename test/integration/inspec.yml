@@ -1,0 +1,11 @@
+name: default
+title: Default InSpec Tests
+maintainer: Your Name
+maintainer_email: your_email@example.com
+license: Apache-2.0
+summary: Default tests for Google Cloud resources
+version: 0.1.0
+
+# Optional: define any dependencies
+depends:
+  - inspec-gcp  # Ensure you have the GCP InSpec plugin installed
