@@ -41,6 +41,9 @@ suites:
       - recipe[default]
     attributes:
 ```
+
+
+
 2. main.tf
 Define a simple resource, such as a Google Cloud Storage bucket or a service account. Here’s an example of a Google Cloud Storage bucket:
 
@@ -297,8 +300,7 @@ my-kitchen-terraform-project/
 1. .kitchen.yml
 This file configures Kitchen with Terraform.
 
-yaml
-Copy code
+```
 ---
 driver:
   name: terraform
@@ -315,73 +317,97 @@ suites:
     run_list:
       - recipe[default]
     attributes:
-2. main.tf
+```
+```
+ kitchen list
+```
+```
+Calling `DidYouMean::SPELL_CHECKERS.merge!(error_name => spell_checker)' has been deprecated. Please call `DidYouMean.correct_error(error_name, spell_checker)' instead.
+Instance             Driver     Provisioner  Verifier  Transport  Last Action    Last Error
+default-ubuntu-2004  Terraform  Terraform    Busser    Ssh        <Not Created>  <None>
+```
+2. `main.tf`
 Define a simple resource, such as a Google Cloud Storage bucket or a service account. Here’s an example of a Google Cloud Storage bucket:
 
-hcl
-Copy code
+```
 provider "google" {
   project = var.project_id
   region  = var.region
 }
 
 resource "google_storage_bucket" "default" {
-  name     = "${var.project_id}-bucket"
+  name     = var.bucket_name
+
   location = var.region
   uniform_access = true
 }
+```
+2. variables.tf
+```
+variable "region" {
+}
+
+variable "project_id" {}
+
+variable "bucket_name" {
+  description = "The name of the S3 bucket"
+  type        = string
+  default     = "my-default-bucket-name"  # Optional
+}
+```
 3. outputs.tf
 Output the bucket name for verification.
 
-hcl
-Copy code
+```
 output "bucket_name" {
   value = google_storage_bucket.default.name
 }
-4. terraform.tfvars
+```
+4. `terraform.tfvars`
 Set variables to be used in main.tf. You can keep these values empty or set them to your project details.
 
-hcl
-Copy code
+```
 project_id = "your_project_id"
 region     = "us-central1"
-5. test/integration/default/test.rb
+bucket_name = "spheric-alcove-430818-f9-test"
+```
+5. `test/integration/default/test.rb`
 This InSpec test checks that the Google Cloud Storage bucket exists.
 
-ruby
-Copy code
+```
 control 'gcs-bucket' do
-  impact 1.0
-  title 'Check if the GCS bucket exists'
-  describe google_storage_bucket(name: "#{input('project_id')}-bucket") do
-    it { should exist }
+    impact 1.0
+    title 'Check if the GCS bucket exists'
+    describe google_storage_bucket(name: "#{input('bucket_name')}d") do
+      it { should exist }
+    end
   end
-end
+
+```
 Steps to Run
 Install Dependencies: Ensure you have the required gems and kitchen-terraform installed:
 
-bash
-Copy code
+```
 gem install kitchen kitchen-terraform
+```
 Initialize Kitchen: Navigate to your project directory and run:
 
-bash
-Copy code
+```
 kitchen init
+```
 Create and Test: Start the kitchen test:
 
 ```
-
 kitchen converge
 kitchen verify
 ```
 Destroy the Environment: After testing, you can destroy the resources:
 
-bash
-Copy code
+```
 kitchen destroy
+```
 Organization and Folder Values
-In your terraform.tfvars, you can leave the organization and folder values empty or just not set them at all if your project doesn't require those hierarchies. Ensure your Google Cloud IAM permissions allow the actions you intend to test.
+In your `terraform.tfvars`, you can leave the organization and folder values empty or just not set them at all if your project doesn't require those hierarchies. Ensure your Google Cloud IAM permissions allow the actions you intend to test.
 
 This setup should provide you with a basic starting point to experiment with kitchen-terraform! Let me know if you have any questions or need further adjustments.
 
@@ -426,8 +452,8 @@ Run Tests: After adding the inspec.yml, you can run your tests as previously out
 Final Directory Structure
 Your final directory structure should look like this:
 
-arduino
-Copy code
+```
+
 my-kitchen-terraform-project/
 ├── .kitchen.yml
 ├── main.tf
@@ -438,6 +464,7 @@ my-kitchen-terraform-project/
         └── default/
             ├── inspec.yml
             └── test.rb
+```
 Adding the inspec.yml file helps manage your InSpec testing environment and can provide additional context for your tests. Let me know if you need any more details or assistance!
 
 
@@ -675,3 +702,85 @@ aws-sdk-shield-1.60.0.gem                     inspec-core-5.22.58.gem           
 aws-sdk-signer-1.50.0.gem                     jmespath-1.6.2.gem                              yajl-ruby-1.4.3.gem
 aws-sdk-simpledb-1.42.0.gem                   json-2.7.4.gem                                  yaml-safe_load_stream3-0.1.2.gem
 ```
+
+./test/integration/default/test.rb
+
+Understanding the Log Output
+When you run kitchen verify with KITCHEN_LOG_LEVEL=debug, you can expect the following:
+
+Directory Scanning: Test Kitchen will log messages indicating that it's scanning directories for controls. It will display the paths it's checking based on the suite name and the expected directory structure.
+
+Control Discovery: You'll see output regarding which control files are being loaded. For example, if your controls are located in ./test/integration/default/, it should log finding controls in that path.
+
+Execution Logs: You’ll get logs for each control that’s executed, showing whether it passed or failed, and providing any relevant output (like print statements you included).
+
+To run InSpec tests within a Docker container, you'll need to create a Docker environment that includes InSpec and your test code. Here’s a step-by-step guide to set this up:
+
+Step 1: Install Docker
+Make sure you have Docker installed on your machine. You can follow the official Docker installation guide for your operating system.
+
+Step 2: Create a Directory for Your Project
+Create a new directory for your project if you haven’t already:
+
+bash
+Copy code
+mkdir kitchen-terraform-inspec
+cd kitchen-terraform-inspec
+Step 3: Create Your InSpec Profile
+Inside your project directory, create a subdirectory for your InSpec tests:
+
+bash
+Copy code
+mkdir -p test/integration/default
+Place your inspec.yml and test.rb files in test/integration/default.
+
+Step 4: Create a Dockerfile
+Create a Dockerfile in the root of your project directory with the following content:
+
+dockerfile
+Copy code
+# Use the official InSpec Docker image
+FROM chef/inspec:latest
+
+# Set the working directory
+WORKDIR /app
+
+# Copy your InSpec profile into the container
+COPY test/integration /app/test/integration
+
+# Run InSpec
+CMD ["inspec", "exec", "test/integration/default/test.rb"]
+Step 5: Build the Docker Image
+Run the following command in the terminal to build your Docker image:
+
+bash
+Copy code
+docker build -t inspec-kitchen-terraform .
+Step 6: Run the Docker Container
+After the image is built, you can run your InSpec tests using the following command:
+
+bash
+Copy code
+docker run --rm inspec-kitchen-terraform
+--rm: Automatically removes the container after it exits.
+Step 7: Pass Environment Variables (Optional)
+If your tests require any environment variables (such as Google Cloud credentials), you can pass them when running the container:
+
+bash
+Copy code
+docker run --rm -e GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/keys.json -v /path/to/your/keys:/path/to/your/keys inspec-kitchen-terraform
+Step 8: View the Results
+The results of your InSpec tests will be displayed in the terminal after you run the container. Any errors or issues will also be printed to the console.
+
+Notes
+Volume Mounting: If you want to access files or directories on your host machine from within the container, you can use the -v flag to mount them as volumes. Adjust the paths as necessary.
+
+Docker Compose (Optional): If your setup becomes more complex, consider using Docker Compose to manage your containers and environment more easily.
+
+This setup should help you run your InSpec tests in an isolated and consistent Docker environment. Let me know if you have any questions or run into issues!
+
+
+
+
+
+
