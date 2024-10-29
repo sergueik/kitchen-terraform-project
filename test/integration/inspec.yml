@@ -8,4 +8,8 @@ version: 0.1.0
 
 # Optional: define any dependencies
 depends:
-  - inspec-gcp  # Ensure you have the GCP InSpec plugin installed
+  - name: inspec-gcp
+    url: https://github.com/inspec/inspec-gcp/archive/master.tar.gz
+    # path: /home/kouzmine_serguei/kitchen-terraform-project/test/integration/vendor/511469763d7fa28d2539e269f8c57c06de20cdc570748572e976a789ff4fe103/inspec-gcp-main/  
+      #- name: train-gcp
+    #  url: https://github.com/inspec/train-gcp/archive/main.tar.gz
