@@ -7,11 +7,15 @@ provisioner:
   name: terraform
   variables:
     project_id: "spheric-alcove-430818-f9"
-    region: "us-central1"  # Change as needed
+    region: "us-central1"
+
+platforms:
+  - name: ubuntu-20.04
+    driver:
+      box: ubuntu/20.04
 
 suites:
   - name: default
     run_list:
       - recipe[default]
-    attributes:
-
+    attributes: {}
