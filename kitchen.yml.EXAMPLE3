@@ -1,0 +1,38 @@
+---
+
+driver:
+  name: terraform
+  command_timeout: 600
+  variables:
+    GOOGLE_APPLICATION_CREDENTIALS: "/home/kouzmine_serguei/my-profile/keys.json"
+
+provisioner:
+  name: terraform
+  variable_files:
+    - variables.tfvars  # You can specify a variables file if you want
+
+verifier:
+  name: inspec
+  inspec_tests:
+    - path: test/integration/default
+  sudo: true
+  backend: gcp
+
+platforms:
+  - name: gcp
+    driver_config:
+      image: "ubuntu-2004"
+      zone: "us-central1-a"
+
+suites:
+  - name: default
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+      region: "us-central1"
+driver:
+  name: terraform
+  directory: .
+
+~                      

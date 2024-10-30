@@ -9,7 +9,7 @@ provisioner:
   name: terraform
 
 transport:
-  name: gcp
+  name: google
   project: "spheric-alcove-430818-f9"  # Your GCP project ID
   credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>"  # Ensure this environment variable is set
 
