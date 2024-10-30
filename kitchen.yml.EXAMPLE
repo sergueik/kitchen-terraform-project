@@ -1,0 +1,40 @@
+---
+driver:
+  name: terraform
+  command_timeout: 600
+
+provisioner:
+  name: terraform
+  variable_files:
+    - test/fixtures/test.tfvars
+  backend_config:
+    bucket: "your-terraform-state-bucket"
+    prefix: "kitchen-terraform/state"
+
+transport:
+  name: gcp
+  project: "your-gcp-project-id"
+  credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>" # Or specify the path directly if needed
+
+platforms:
+  - name: ubuntu-2004
+
+verifier:
+  name: inspec
+  format: documentation
+  profiles:
+    - name: my-inspec-profile
+      path: test/integration/default
+
+suites:
+  - name: default
+    driver:
+      variables:
+        project_id: "your-gcp-project-id"
+        region: "us-central1"
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+      project_id: "your-gcp-project-id"
+      region: "us-central1"

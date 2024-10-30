@@ -1,15 +1,11 @@
----
-
 driver:
   name: terraform
   command_timeout: 600
   variables:
-    GOOGLE_APPLICATION_CREDENTIALS: "/home/kouzmine_serguei/my-profile/keys.json"
+    GOOGLE_APPLICATION_CREDENTIALS: "/path/to/your/keys.json"
 
 provisioner:
   name: terraform
-  variable_files:
-    - variables.tfvars  # You can specify a variables file if you want
 
 verifier:
   name: inspec
@@ -31,6 +27,3 @@ suites:
         - test/integration/default
     attributes:
       region: "us-central1"
-driver:
-  name: terraform
-  directory: .
