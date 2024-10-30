@@ -1,3 +1,5 @@
+#require_controls 'inspec-gcp'
+
 control "bucket-name" do
     describe google_storage_bucket(name: input('bucket_name')) do
       it { should exist }
