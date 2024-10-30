@@ -1,8 +1,16 @@
+---
 driver:
   name: terraform
   command_timeout: 600
-  variables:
-    GOOGLE_APPLICATION_CREDENTIALS: "/path/to/your/keys.json"
+  variable_files:
+    - variables.tfvars  # You can specify a variables file if you want
+
+transport:
+  name: gcp
+  project: "spheric-alcove-430818-f9"
+  credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>" # Or specify the path directly if needed
+
+
 
 provisioner:
   name: terraform

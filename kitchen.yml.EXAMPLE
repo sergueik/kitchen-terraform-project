@@ -13,7 +13,7 @@ provisioner:
 
 transport:
   name: gcp
-  project: "your-gcp-project-id"
+  project: "spheric-alcove-430818-f9"
   credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>" # Or specify the path directly if needed
 
 platforms:
