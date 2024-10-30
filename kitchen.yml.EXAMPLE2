@@ -3,35 +3,29 @@ driver:
   name: terraform
   command_timeout: 600
   variable_files:
-    - variables.tfvars  # You can specify a variables file if you want
-
-transport:
-  name: gcp
-  project: "spheric-alcove-430818-f9"
-  credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>" # Or specify the path directly if needed
-
-
+    - variables.tfvars  # Optional: specify a variables file if you want
 
 provisioner:
   name: terraform
 
+transport:
+  name: gcp
+  project: "spheric-alcove-430818-f9"  # Your GCP project ID
+  credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>"  # Ensure this environment variable is set
+
 verifier:
   name: inspec
   inspec_tests:
-    - path: test/integration/default
-  sudo: true
-  backend: gcp
+    - test/integration/default  # Specify the path to your InSpec tests
+  sudo: true  # Optional: specify if you need sudo for the tests
 
 platforms:
   - name: gcp
     driver_config:
-      image: "ubuntu-2004"
-      zone: "us-central1-a"
+      image: "ubuntu-2004"  # Specify the base image for your instance
+      zone: "us-central1-a"  # Specify the zone for your GCP instance
 
 suites:
   - name: default
-    verifier:
-      inspec_tests:
-        - test/integration/default
     attributes:
-      region: "us-central1"
+      region: "us-central1"  # Optional: set any attributes needed for your tests
