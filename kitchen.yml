@@ -20,10 +20,11 @@ verifier:
   sudo: true
 
 platforms:
-  - name: ubuntu-2004
-    driver_config:
-      image: "ubuntu-2004"
-      zone: "us-central1-a"
+  - name: gcp
+#  - name: ubuntu-2004
+#    driver_config:
+#      image: "ubuntu-2004"
+#      zone: "us-central1-a"
 
  suites:
   - name: default
