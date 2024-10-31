@@ -2,6 +2,7 @@
 driver:
   name: terraform
   command_timeout: 600
+  verify_version: false
   variable_files:
     - terraform.tfvars  # Specify your variables file here
 
