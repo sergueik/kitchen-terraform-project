@@ -17,8 +17,8 @@ control 'google-storage-bucket' do
    describe google_storage_bucket(name: input('bucket_name')) do
       it { should exist }
   
-      actual_bucket = subject.bucket  # Store the actual bucket value
-      puts "Actual bucket: #{actual_bucket}"  # Print the actual value
+      # actual_bucket = subject.bucket  # Store the actual bucket value
+      # puts "Actual bucket: #{actual_bucket}"  # Print the actual value
       #  'bucket'  is undefined
       its('id') { should cmp 'spheric-alcove-430818-f9-test' }  # This should fail if the value is different
     end
