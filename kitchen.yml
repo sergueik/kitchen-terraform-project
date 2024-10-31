@@ -27,10 +27,13 @@ platforms:
 #      image: "ubuntu-2004"
 #      zone: "us-central1-a"
 
- suites:
+suites:
   - name: default
     verifier:
       inspec_tests:
         - test/integration/default
-    attributes:
-      region: "us-central1"
+      systems:
+        - name: default gcp
+          backend: gcp
+          controls:
+            - gcp
