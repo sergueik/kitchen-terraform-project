@@ -9,24 +9,19 @@ driver:
 provisioner:
   name: terraform
 
-transport:
-  name: exec
-  project: "spheric-alcove-430818-f9"  # Update with your project ID
-  credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>"  # Ensure this environment variable is set
-
 platforms:
   - name: gcp
 
 suites:
   - name: default
     verifier:
+      name: inspec
+      format: documentation
       inspec_tests:
-        - test/integration/default
-      systems:
-        - name: default gcp
-          backend: gcp
-          controls:
-            - gcp
-      # Setting target
+        - test/integration/default  # Path to your InSpec tests
+      # Passing target configuration directly
       options:
-        target: 'gcp://'          
+        target: 'gcp://'
+        project: "spheric-alcove-430818-f9"  # Replace with your actual project ID
+        credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>"  # Ensure this environment variable is set
+
