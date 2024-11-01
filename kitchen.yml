@@ -16,6 +16,7 @@ verifier:
   name: inspec
   inspec_tests:
     - test/integration/default
+  ommand: "inspec exec test/integration/default/ -t gcp:// --input-file attributes.yml"
   sudo: true
   options:
     target: 'gcp://'
@@ -25,14 +26,14 @@ verifier:
 
 platforms:
   - name: gcp
-
 suites:
   - name: default
     verifier:
       inspec_tests:
         - test/integration/default
+      command: "inspec exec test/integration/default/ -t gcp:// --input-file attributes.yml"
       options:
         target: 'gcp://'
         input-file: "attributes.yml"
         project: "spheric-alcove-430818-f9"
-        credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>"
+        credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>"  
