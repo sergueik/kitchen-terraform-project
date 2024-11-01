@@ -11,32 +11,26 @@ provisioner:
 
 transport:
   name: exec
-  project: "spheric-alcove-430818-f9"  # Update with your project ID
-  credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>"  # Ensure this environment variable is set
 
 verifier:
   name: inspec
   inspec_tests:
     - test/integration/default
   sudo: true
+  options:
+    target: 'gcp://'
+    project: "spheric-alcove-430818-f9"  # Replace with your actual project ID
+    credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>"
 
 platforms:
   - name: gcp
-#  - name: ubuntu-2004
-#    driver_config:
-#      image: "ubuntu-2004"
-#      zone: "us-central1-a"
 
 suites:
   - name: default
     verifier:
       inspec_tests:
         - test/integration/default
-      systems:
-        - name: default gcp
-          backend: gcp
-          controls:
-            - gcp
-    # Setting target
-          options:
-            target: 'gcp://'          
+      options:
+        target: 'gcp://'
+        project: "spheric-alcove-430818-f9"
+        credentials: "<%= ENV['GOOGLE_APPLICATION_CREDENTIALS'] %>"
